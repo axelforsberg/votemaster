@@ -52,14 +52,14 @@ public class VotesActivity extends FragmentActivity implements VoteListFragment.
     }
 
 	@Override
-	public void onNameSelected(Vote vote) {
+	public void onNameSelected(int pos) {
 		 VoteDetailsFragment detailsFrag = (VoteDetailsFragment) getSupportFragmentManager().findFragmentById(R.id.details_fragment);
 
 	        if (detailsFrag != null) {
 	            // If article frag is available, we're in two-pane layout...
 
 	            // Call a method in the ArticleFragment to update its content
-	        	detailsFrag.updateDetailsView(vote);
+	        	detailsFrag.updateDetailsView(pos);
 
 	        } else {
 	            // If the frag is not available, we're in the one-pane layout and must swap frags...

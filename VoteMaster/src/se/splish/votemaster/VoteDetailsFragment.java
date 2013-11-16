@@ -4,6 +4,7 @@ import java.util.List;
 
 import se.splish.votemaster.helper.DatabaseHelper;
 import se.splish.votemaster.model.Vote;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Layout;
@@ -47,11 +48,11 @@ public class VoteDetailsFragment extends Fragment implements OnClickListener {
 		Bundle args = getArguments();
 		if (args != null) {
 			// Set article based on argument passed in
-			updateDetailsView(getVotes().get(args.getInt(ARG_POSITION)));
+			updateDetailsView(args.getInt(ARG_POSITION));
 		} else if (mCurrentPosition != -1) {
 			// Set article based on saved instance state defined during
 			// onCreateView
-			updateDetailsView(getVotes().get(mCurrentPosition));
+			updateDetailsView(mCurrentPosition);
 		} else {
 			((VotesActivity) getActivity()).hideUI();
 		}
@@ -59,13 +60,15 @@ public class VoteDetailsFragment extends Fragment implements OnClickListener {
 	}
 
 
-	public void updateDetailsView(Vote vote) {
+	public void updateDetailsView(int pos) {
 		((VotesActivity) getActivity()).showUI();
 		TextView name = (TextView) getActivity().findViewById(R.id.details_name);
-		name.setText(vote.getName());
+		name.setText(getVotes().get(pos).getName());
 
 		TextView description = (TextView) getActivity().findViewById(R.id.details_description);
-		description.setText(vote.getDescription());
+		description.setText(getVotes().get(pos).getDescription());
+		
+		mCurrentPosition = pos;
 
 		Button open = (Button) getActivity().findViewById(R.id.details_btn_open);
 		open.setOnClickListener(this);
@@ -74,9 +77,6 @@ public class VoteDetailsFragment extends Fragment implements OnClickListener {
 	private List<Vote> getVotes() {
 		DatabaseHelper dbh = new DatabaseHelper(this.getActivity());
 		List<Vote> votes = dbh.getAllVotes();
-		for (Vote v : votes) {
-			Log.d("name", v.getName());
-		}
 		return votes;
 	}
 
@@ -93,6 +93,10 @@ public class VoteDetailsFragment extends Fragment implements OnClickListener {
 	public void onClick(View v) {
 		switch (v.getId()) {
 			case R.id.details_btn_open:
+				Intent in = new Intent(getActivity(),VotingActivity.class);
+				in.putExtra("vid", getVotes().get(mCurrentPosition).getId());
+				in.putExtra("nov", getVotes().get(mCurrentPosition).getNbrOfVotes());
+				startActivity(in);
 			break;
 		}
 	}

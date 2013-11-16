@@ -78,14 +78,14 @@ public class CreateActivity extends Activity implements OnClickListener, OnValue
 
 	private void createVote() {
 		if (name.getText().toString().length() < 1) {
-			Toast.makeText(this, "Ange ett namn på omröstningen", Toast.LENGTH_LONG).show();
+			Toast.makeText(this, "Ange ett namn på omröstningen", Toast.LENGTH_SHORT).show();
 			return;
 		}
 
 		if (!myAdapter.isNamesPresent()) {
 			Toast.makeText(this,
 					"Ange ett namn på alla kandidater eller minska antalet kandidater",
-					Toast.LENGTH_LONG).show();
+					Toast.LENGTH_SHORT).show();
 			return;
 		}
 

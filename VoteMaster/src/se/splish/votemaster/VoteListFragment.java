@@ -18,7 +18,7 @@ public class VoteListFragment extends ListFragment {
 
 	public interface OnVoteNameSelectedListener {
 		/** Called by HeadlinesFragment when a list item is selected */
-		public void onNameSelected(Vote vote);
+		public void onNameSelected(int pos);
 	}
 
 	@Override
@@ -40,15 +40,9 @@ public class VoteListFragment extends ListFragment {
 
 	@Override
 	public void onListItemClick(ListView l, View v, int pos, long id) {
-		Vote vote = getVotes().get(pos);
-
-		if (vote != null) {
-			// Notify the parent activity of selected item
-			mCallback.onNameSelected(vote);
-
+			mCallback.onNameSelected(pos);
 			// Set the item as checked to be highlighted when in two-pane layout
 			getListView().setItemChecked(pos, true);
-		}
 	}
 
 	@Override

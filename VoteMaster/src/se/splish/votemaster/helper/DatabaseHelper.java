@@ -171,7 +171,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	}
 
 	public Candidate getCandidate(int cid) {
-		return null;
+		String selectQuery = "SELECT  * FROM " + TABLE_CANDIDATE + " WHERE " + KEY_CID + " = " + cid;
+
+		SQLiteDatabase db = this.getReadableDatabase();
+		Cursor c = db.rawQuery(selectQuery, null);
+		Candidate cand = null;
+		// looping through all rows and adding to list
+		if (c.moveToFirst()) {
+			do {
+					cand = new Candidate(
+						c.getInt(c.getColumnIndex(KEY_CID)), 
+						c.getString(c.getColumnIndex(KEY_CANDIDATE_NAME)));
+			} while (c.moveToNext());
+		}
+		return cand;
 	}
 
 	public List<Candidate> getAllCandidates() {
