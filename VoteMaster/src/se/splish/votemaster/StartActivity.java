@@ -18,6 +18,9 @@ public class StartActivity extends Activity implements OnClickListener {
 
 		create = (Button) findViewById(R.id.btn_create);
 		create.setOnClickListener(this);
+		
+		actives = (Button) findViewById(R.id.btn_actives);
+		actives.setOnClickListener(this);
 	}
 
 	@Override
@@ -34,6 +37,7 @@ public class StartActivity extends Activity implements OnClickListener {
 			startActivity(new Intent(this, CreateActivity.class));
 			break;
 		case R.id.btn_actives:
+			startActivity(new Intent(this, VotesActivity.class));
 			break;
 		case R.id.btn_result:
 			break;

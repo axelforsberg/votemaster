@@ -2,6 +2,7 @@ package se.splish.votemaster;
 
 import java.util.ArrayList;
 
+import se.splish.votemaster.model.Candidate;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -46,6 +47,16 @@ public class CandidateAdapter extends BaseAdapter {
     		}
     	}
     	return true;
+    }
+    
+    public ArrayList<Candidate> getCandidates(){
+    	ArrayList<Candidate> names = new ArrayList<Candidate>();
+	    	for(ListItem li:myItems){
+	    		if (!"".equals(li.caption) && li.caption != null){
+	    			names.add(new Candidate(li.caption));
+	    		}
+	    	}
+	    return names;
     }
 
     public int getCount() {

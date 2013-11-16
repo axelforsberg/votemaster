@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import se.splish.votemaster.model.Candidate;
+import se.splish.votemaster.model.Result;
 import se.splish.votemaster.model.Vote;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
@@ -24,7 +24,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	private static final String DATABASE_NAME = "voteManager";
 
 	// Table Names
-	private static final String TABLE_VOTES = "votes";
+	private static final String TABLE_RESULT = "result";
 	private static final String TABLE_VOTE = "vote";
 	private static final String TABLE_CANDIDATE = "candidate";
 
@@ -52,11 +52,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			+ KEY_CID + " INTEGER PRIMARY KEY AUTOINCREMENT," + KEY_CANDIDATE_NAME + " TEXT" + ")";
 
 	// votes table create statement
-	private static final String CREATE_TABLE_VOTES = "CREATE TABLE " + TABLE_VOTES + "(" + KEY_VID
-			+ " INTEGER PRIMARY KEY, " + KEY_CID + " INTEGER PRIMARY KEY, " + KEY_VOTES
-			+ " INTEGER, " + "FOREIGN KEY(" + KEY_VID + ") REFERENCES " + TABLE_VOTE + "("
-			+ KEY_VID + "), " + "FOREIGN KEY(" + KEY_CID + ") REFERENCES " + TABLE_CANDIDATE + "("
-			+ KEY_CID + ")" + ")";
+	private static final String CREATE_TABLE_RESULT = "CREATE TABLE " + TABLE_RESULT + "("
+			+ KEY_VID + " INTEGER, " + KEY_CID + " INTEGER, " + KEY_VOTES + " INTEGER, "
+			+ "FOREIGN KEY(" + KEY_VID + ") REFERENCES " + TABLE_VOTE + "(" + KEY_VID + "), "
+			+ "FOREIGN KEY(" + KEY_CID + ") REFERENCES " + TABLE_CANDIDATE + "(" + KEY_CID + "),"
+			+ "PRIMARY KEY (" + KEY_VID + "," + KEY_CID + "))";
 
 	public DatabaseHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -67,7 +67,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		// creating required tables
 		db.execSQL(CREATE_TABLE_VOTE);
 		db.execSQL(CREATE_TABLE_CANDIDATE);
-		db.execSQL(CREATE_TABLE_VOTES);
+		db.execSQL(CREATE_TABLE_RESULT);
 	}
 
 	@Override
@@ -75,13 +75,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		// on upgrade drop older tables
 		db.execSQL("DROP TABLE IF EXISTS " + TABLE_VOTE);
 		db.execSQL("DROP TABLE IF EXISTS " + TABLE_CANDIDATE);
-		db.execSQL("DROP TABLE IF EXISTS " + TABLE_VOTES);
+		db.execSQL("DROP TABLE IF EXISTS " + TABLE_RESULT);
 
 		// create new tables
 		onCreate(db);
 	}
 
-	public Boolean createVote(Vote vote) {
+	// ***Borde returnera vid för den nya voteraden***
+	public int createVote(Vote vote) {
 		SQLiteDatabase db = this.getWritableDatabase();
 
 		ContentValues values = new ContentValues();
@@ -91,49 +92,44 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 		// insert row
 		long id = db.insert(TABLE_VOTE, null, values);
-		return id != -1;
+
+		return (int) id;
 	}
 
-	public Boolean createCandidate(Candidate candidate) {
+	// ***Borde returnera vid för den nya candidateraden***
+	public int createCandidate(Candidate candidate) {
 		SQLiteDatabase db = this.getWritableDatabase();
 		ContentValues values = new ContentValues();
 		values.put(KEY_CANDIDATE_NAME, candidate.getName());
 
 		// insert row
 		long id = db.insert(TABLE_CANDIDATE, null, values);
-		return id != -1;
+		return (int) id;
 	}
 
-	public Boolean createVC(int vid, int cid) {
+	public Boolean createResult(Result r) {
 		SQLiteDatabase db = this.getWritableDatabase();
 
 		ContentValues values = new ContentValues();
-		values.put(KEY_VID, vid);
-		values.put(KEY_CID, cid);
-		values.put(KEY_VOTES, 0);
+		values.put(KEY_VID, r.getVid());
+		values.put(KEY_CID, r.getCid());
+		values.put(KEY_VOTES, r.getVotes());
 
 		// insert row
-		long id = db.insert(TABLE_VOTES, null, values);
+		long id = db.insert(TABLE_RESULT, null, values);
 		return id != -1;
 	}
 
-	public void incrementVote(int vid, int cid) {
-		// SQLiteDatabase db = this.getWritableDatabase();
-		String q = "UPDATE " + TABLE_VOTES + " SET " + KEY_VOTES + " = " + KEY_VOTES
+	public void incrementResult(int vid, int cid) {
+		SQLiteDatabase db = this.getWritableDatabase();
+		String q = "UPDATE " + TABLE_RESULT + " SET " + KEY_VOTES + " = " + KEY_VOTES
 				+ " + 1 WHERE cid = " + cid + " AND vid = " + vid;
-		Log.d("createVC", q);
-		// db.execSQL(q);
+		db.execSQL(q);
 	}
 
-	public Vote getVote(int vid) {
-		return null;
-	}
-
-	public List<Vote> getAllVote() {
-		List<Vote> votelist = new ArrayList<Vote>();
-		String selectQuery = "SELECT  * FROM " + TABLE_VOTE;
-
-		Log.e(LOG, selectQuery);
+	public List<Result> getResultFromVote(int vid) {
+		List<Result> resultlist = new ArrayList<Result>();
+		String selectQuery = "SELECT  * FROM " + TABLE_RESULT + " WHERE " + KEY_VID + " = " + vid;
 
 		SQLiteDatabase db = this.getReadableDatabase();
 		Cursor c = db.rawQuery(selectQuery, null);
@@ -141,12 +137,33 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		// looping through all rows and adding to list
 		if (c.moveToFirst()) {
 			do {
-				Vote v = new Vote(
-						c.getInt(c.getColumnIndex(KEY_VID)), 
-						c.getString(c.getColumnIndex(KEY_VOTE_NAME)), 
-						c.getString(c.getColumnIndex(KEY_DESCRIPTION)), 
-						c.getInt(c.getColumnIndex(KEY_NBR_OF_VOTES)));
-				
+				Result r = new Result(c.getInt(c.getColumnIndex(KEY_VID)), c.getInt(c
+						.getColumnIndex(KEY_CID)), c.getInt(c.getColumnIndex(KEY_VOTES)));
+				resultlist.add(r);
+			} while (c.moveToNext());
+		}
+		return resultlist;
+	}
+
+	public Vote getVote(int vid) {
+		return null;
+	}
+
+	public List<Vote> getAllVotes() {
+		List<Vote> votelist = new ArrayList<Vote>();
+		String selectQuery = "SELECT  * FROM " + TABLE_VOTE;
+
+		SQLiteDatabase db = this.getReadableDatabase();
+		Cursor c = db.rawQuery(selectQuery, null);
+
+		// looping through all rows and adding to list
+		if (c.moveToFirst()) {
+			do {
+				Vote v = new Vote(c.getInt(c.getColumnIndex(KEY_VID)), c.getString(c
+						.getColumnIndex(KEY_VOTE_NAME)), c.getString(c
+						.getColumnIndex(KEY_DESCRIPTION)), c.getInt(c
+						.getColumnIndex(KEY_NBR_OF_VOTES)));
+
 				votelist.add(v);
 			} while (c.moveToNext());
 		}
@@ -157,11 +174,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		return null;
 	}
 
-	public List<Candidate> getCandidates() {
+	public List<Candidate> getAllCandidates() {
 		List<Candidate> candidatelist = new ArrayList<Candidate>();
 		String selectQuery = "SELECT  * FROM " + TABLE_CANDIDATE;
-
-		Log.e(LOG, selectQuery);
 
 		SQLiteDatabase db = this.getReadableDatabase();
 		Cursor c = db.rawQuery(selectQuery, null);
@@ -169,9 +184,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		// looping through all rows and adding to list
 		if (c.moveToFirst()) {
 			do {
-				Candidate v = new Candidate(
-						c.getInt(c.getColumnIndex(KEY_CID)), 
-						c.getString(c.getColumnIndex(KEY_CANDIDATE_NAME)));
+				Candidate v = new Candidate(c.getInt(c.getColumnIndex(KEY_CID)), c.getString(c
+						.getColumnIndex(KEY_CANDIDATE_NAME)));
 				candidatelist.add(v);
 			} while (c.moveToNext());
 		}

@@ -30,6 +30,12 @@
             android:screenOrientation="landscape">
         </activity>
         
+        <activity
+            android:name="se.splish.votemaster.VotesActivity"
+            android:screenOrientation="landscape">
+        </activity>
+        
+        
         
     </application>
 
