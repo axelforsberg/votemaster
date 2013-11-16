@@ -1,9 +1,13 @@
 package se.splish.votemaster.helper;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import se.splish.votemaster.model.Candidate;
 import se.splish.votemaster.model.Vote;
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
@@ -48,10 +52,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			+ KEY_CID + " INTEGER PRIMARY KEY AUTOINCREMENT," + KEY_CANDIDATE_NAME + " TEXT" + ")";
 
 	// votes table create statement
-	// ***DENNA SKA HA TVÅ FOREIGN PRIMARY KEYS***
 	private static final String CREATE_TABLE_VOTES = "CREATE TABLE " + TABLE_VOTES + "(" + KEY_VID
-			+ " INTEGER PRIMARY KEY," + KEY_CID + " INTEGER PRIMARY KEY," + KEY_VOTES + " INTEGER"
-			+ ")";
+			+ " INTEGER PRIMARY KEY, " + KEY_CID + " INTEGER PRIMARY KEY, " + KEY_VOTES
+			+ " INTEGER, " + "FOREIGN KEY(" + KEY_VID + ") REFERENCES " + TABLE_VOTE + "("
+			+ KEY_VID + "), " + "FOREIGN KEY(" + KEY_CID + ") REFERENCES " + TABLE_CANDIDATE + "("
+			+ KEY_CID + ")" + ")";
 
 	public DatabaseHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -118,5 +123,58 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 				+ " + 1 WHERE cid = " + cid + " AND vid = " + vid;
 		Log.d("createVC", q);
 		// db.execSQL(q);
+	}
+
+	public Vote getVote(int vid) {
+		return null;
+	}
+
+	public List<Vote> getAllVote() {
+		List<Vote> votelist = new ArrayList<Vote>();
+		String selectQuery = "SELECT  * FROM " + TABLE_VOTE;
+
+		Log.e(LOG, selectQuery);
+
+		SQLiteDatabase db = this.getReadableDatabase();
+		Cursor c = db.rawQuery(selectQuery, null);
+
+		// looping through all rows and adding to list
+		if (c.moveToFirst()) {
+			do {
+				Vote v = new Vote(
+						c.getInt(c.getColumnIndex(KEY_VID)), 
+						c.getString(c.getColumnIndex(KEY_VOTE_NAME)), 
+						c.getString(c.getColumnIndex(KEY_DESCRIPTION)), 
+						c.getInt(c.getColumnIndex(KEY_NBR_OF_VOTES)));
+				
+				votelist.add(v);
+			} while (c.moveToNext());
+		}
+		return votelist;
+	}
+
+	public Candidate getCandidate(int cid) {
+		return null;
+	}
+
+	public List<Candidate> getCandidates() {
+		List<Candidate> candidatelist = new ArrayList<Candidate>();
+		String selectQuery = "SELECT  * FROM " + TABLE_CANDIDATE;
+
+		Log.e(LOG, selectQuery);
+
+		SQLiteDatabase db = this.getReadableDatabase();
+		Cursor c = db.rawQuery(selectQuery, null);
+
+		// looping through all rows and adding to list
+		if (c.moveToFirst()) {
+			do {
+				Candidate v = new Candidate(
+						c.getInt(c.getColumnIndex(KEY_CID)), 
+						c.getString(c.getColumnIndex(KEY_CANDIDATE_NAME)));
+				candidatelist.add(v);
+			} while (c.moveToNext());
+		}
+		return candidatelist;
 	}
 }

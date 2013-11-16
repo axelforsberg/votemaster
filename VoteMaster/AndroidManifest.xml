@@ -26,6 +26,7 @@
         
         <activity
             android:name="se.splish.votemaster.CreateActivity"
+            android:windowSoftInputMode="adjustPan"
             android:screenOrientation="landscape">
         </activity>
         
