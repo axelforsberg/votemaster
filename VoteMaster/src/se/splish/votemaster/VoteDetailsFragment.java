@@ -32,7 +32,7 @@ public class VoteDetailsFragment extends Fragment implements OnClickListener {
 	Boolean resultsIsVisible = false;
 	Button show, remove;
 	View v;
-	
+
 	public interface OnVoteDeletedListener {
 		public void onVoteDeleted();
 	}
@@ -80,6 +80,10 @@ public class VoteDetailsFragment extends Fragment implements OnClickListener {
 		TextView description = (TextView) getActivity().findViewById(R.id.details_description);
 		description.setText(v.get(pos).getDescription());
 
+		// Vote description
+		TextView tnov = (TextView) getActivity().findViewById(R.id.tnov);
+		tnov.setText("Totala antalet röster: " + v.get(pos).getTotalVotes());
+
 		// Open vote button
 		Button open = (Button) getActivity().findViewById(R.id.details_btn_open);
 		open.setOnClickListener(this);
@@ -98,8 +102,14 @@ public class VoteDetailsFragment extends Fragment implements OnClickListener {
 		resultList = (ListView) getActivity().findViewById(R.id.list_result);
 
 		List<String> results = new ArrayList<String>();
+		
 		for (Result r : res) {
-			results.add(r.getVotes() + "   " + getCandidate(r.getCid()));
+			if (v.get(pos).getTotalVotes() > 0) {
+				int percent = (int) Math.round(((double)r.getVotes() / (double)v.get(pos).getTotalVotes())*100);
+				results.add(percent + "% " + r.getVotes() + " röster  -  " + getCandidate(r.getCid()));
+			} else {
+				results.add(r.getVotes() + " röster  -  " + getCandidate(r.getCid()));
+			}
 		}
 
 		ArrayAdapter<String> listAdapter = new ArrayAdapter<String>(getActivity(),
@@ -171,7 +181,7 @@ public class VoteDetailsFragment extends Fragment implements OnClickListener {
 
 		}
 	}
-	
+
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
@@ -191,7 +201,7 @@ public class VoteDetailsFragment extends Fragment implements OnClickListener {
 			public void onClick(DialogInterface dialog, int which) {
 				switch (which) {
 				case DialogInterface.BUTTON_POSITIVE:
-					
+
 					removeVote(getVotes().get(mCurrentPosition).getId());
 					Toast.makeText(getActivity(), "Omröstningen raderad", Toast.LENGTH_LONG).show();
 					break;
@@ -201,7 +211,8 @@ public class VoteDetailsFragment extends Fragment implements OnClickListener {
 			}
 		};
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-		builder.setMessage("Är du säker på att du vill radera omrötningen?").setPositiveButton("Ja", dialogClickListener)
+		builder.setMessage("Är du säker på att du vill radera omrötningen?")
+				.setPositiveButton("Ja", dialogClickListener)
 				.setNegativeButton("Nej", dialogClickListener).show();
 	}
 }

@@ -64,4 +64,12 @@
 
     </ListView>
 
+    <TextView
+        android:id="@+id/tnov"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/details_description"
+        android:layout_below="@+id/details_description"
+        android:text="total number of votes" />
+
 </RelativeLayout>

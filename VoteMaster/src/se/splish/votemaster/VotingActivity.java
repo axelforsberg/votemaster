@@ -17,6 +17,7 @@ import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -27,7 +28,7 @@ import android.widget.Toast;
 
 public class VotingActivity extends Activity {
 	DatabaseHelper dbh;
-	int vid = 2;
+	int vid;
 	int nbrOfVotes;
 	GridView gridview = null;
 
@@ -87,6 +88,8 @@ public class VotingActivity extends Activity {
 	}
 
 	private void updateResult() {
+		dbh.incrementVote(vid);
+		Log.d("incrementCall", vid + "");
 		for (int i : selectedPositions) {
 			dbh.incrementResult(vid, results.get(i).getCid());
 		}

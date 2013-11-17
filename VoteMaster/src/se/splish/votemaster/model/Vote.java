@@ -5,16 +5,22 @@ public class Vote {
 	private String name;
 	private String description;
 	private int nbrOfVotes;
+	private int totalVotes;
 
-	public Vote(String name, String description, int nbrOfVotes) {
+	public Vote(String name, String description, int nbrOfVotes, int totalVotes) {
 		this.name = name;
 		this.description = description;
 		this.nbrOfVotes = nbrOfVotes;
+		this.totalVotes = totalVotes;
 	}
 
-	public Vote(int vid, String name, String description, int nbrOfVotes) {
-		this(name, description, nbrOfVotes);
+	public Vote(int vid, String name, String description, int nbrOfVotes, int totalVotes) {
+		this(name, description, nbrOfVotes, totalVotes);
 		this.vid = vid;
+	}
+	
+	public int getTotalVotes(){
+		return totalVotes;
 	}
 
 	public int getId() {

@@ -94,7 +94,7 @@ public class CreateActivity extends Activity implements OnClickListener, OnValue
 
 		DatabaseHelper dbh = new DatabaseHelper(this);
 		Vote vote = new Vote(name.getText().toString(), description.getText().toString(),
-				nbrOfVotes.getValue());
+				nbrOfVotes.getValue(), 0);
 		int vid = dbh.createVote(vote);
 		List<Candidate> candidates = myAdapter.getCandidates();
 		for (Candidate c : candidates) {

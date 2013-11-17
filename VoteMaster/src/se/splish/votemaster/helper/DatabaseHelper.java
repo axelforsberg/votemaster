@@ -33,6 +33,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	private static final String KEY_VOTE_NAME = "name";
 	private static final String KEY_DESCRIPTION = "description";
 	private static final String KEY_NBR_OF_VOTES = "nbrOfVotes";
+	private static final String KEY_TOTAL_VOTES = "totalVotes";
 
 	// VOTES Table - column names
 	private static final String KEY_VOTES = "votes";
@@ -45,7 +46,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	// vote table create statement
 	private static final String CREATE_TABLE_VOTE = "CREATE TABLE " + TABLE_VOTE + "(" + KEY_VID
 			+ " INTEGER PRIMARY KEY AUTOINCREMENT," + KEY_VOTE_NAME + " TEXT," + KEY_DESCRIPTION
-			+ " TEXT," + KEY_NBR_OF_VOTES + " INTEGER" + ")";
+			+ " TEXT," + KEY_NBR_OF_VOTES + " INTEGER," + KEY_TOTAL_VOTES + " INTEGER" + ")";
 
 	// candidate table create statement
 	private static final String CREATE_TABLE_CANDIDATE = "CREATE TABLE " + TABLE_CANDIDATE + "("
@@ -89,6 +90,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		values.put(KEY_VOTE_NAME, vote.getName());
 		values.put(KEY_DESCRIPTION, vote.getDescription());
 		values.put(KEY_NBR_OF_VOTES, vote.getNbrOfVotes());
+		values.put(KEY_TOTAL_VOTES, vote.getTotalVotes());
 
 		// insert row
 		long id = db.insert(TABLE_VOTE, null, values);
@@ -118,6 +120,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		// insert row
 		long id = db.insert(TABLE_RESULT, null, values);
 		return id != -1;
+	}
+	
+	public void incrementVote(int vid) {
+		SQLiteDatabase db = this.getWritableDatabase();
+		String q = "UPDATE " + TABLE_VOTE + " SET " + KEY_TOTAL_VOTES + " = " + KEY_TOTAL_VOTES
+				+ " + 1 WHERE vid = " + vid;
+		db.execSQL(q);
 	}
 
 	public void incrementResult(int vid, int cid) {
@@ -159,10 +168,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		// looping through all rows and adding to list
 		if (c.moveToFirst()) {
 			do {
-				Vote v = new Vote(c.getInt(c.getColumnIndex(KEY_VID)), c.getString(c
-						.getColumnIndex(KEY_VOTE_NAME)), c.getString(c
-						.getColumnIndex(KEY_DESCRIPTION)), c.getInt(c
-						.getColumnIndex(KEY_NBR_OF_VOTES)));
+				Vote v = new Vote(c.getInt(c.getColumnIndex(KEY_VID)), 
+						c.getString(c.getColumnIndex(KEY_VOTE_NAME)), 
+						c.getString(c.getColumnIndex(KEY_DESCRIPTION)), 
+						c.getInt(c.getColumnIndex(KEY_NBR_OF_VOTES)),
+						c.getInt(c.getColumnIndex(KEY_TOTAL_VOTES)));
 
 				votelist.add(v);
 			} while (c.moveToNext());
