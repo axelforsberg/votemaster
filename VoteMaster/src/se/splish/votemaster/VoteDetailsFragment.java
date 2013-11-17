@@ -105,7 +105,8 @@ public class VoteDetailsFragment extends Fragment implements OnClickListener {
 		
 		for (Result r : res) {
 			if (v.get(pos).getTotalVotes() > 0) {
-				int percent = (int) Math.round(((double)r.getVotes() / (double)v.get(pos).getTotalVotes())*100);
+				double percent = (double)r.getVotes() / (double)v.get(pos).getTotalVotes()*100;
+				percent = (double)Math.round(percent * 100) / 100;
 				results.add(percent + "% " + r.getVotes() + " röster  -  " + getCandidate(r.getCid()));
 			} else {
 				results.add(r.getVotes() + " röster  -  " + getCandidate(r.getCid()));
