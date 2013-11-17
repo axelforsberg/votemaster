@@ -7,6 +7,9 @@ import se.splish.votemaster.helper.DatabaseHelper;
 import se.splish.votemaster.model.Candidate;
 import se.splish.votemaster.model.Result;
 import se.splish.votemaster.model.Vote;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -18,13 +21,22 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class VoteDetailsFragment extends Fragment implements OnClickListener {
+	OnVoteDeletedListener mCallback;
+	DatabaseHelper dbh;
 	final static String ARG_POSITION = "position";
 	int mCurrentPosition = -1;
 	ListView resultList;
+	Boolean resultsIsVisible = false;
+	Button show, remove;
 	View v;
 	
+	public interface OnVoteDeletedListener {
+		public void onVoteDeleted();
+	}
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -51,15 +63,15 @@ public class VoteDetailsFragment extends Fragment implements OnClickListener {
 		} else {
 			((VotesActivity) getActivity()).hideUI();
 		}
+		dbh = new DatabaseHelper(this.getActivity());
 	}
-
 
 	public void updateDetailsView(int pos) {
 		((VotesActivity) getActivity()).showUI();
-		
+
 		List<Vote> v = getVotes();
 		List<Result> res = getResult(v.get(pos).getId());
-		
+
 		// Vote name
 		TextView name = (TextView) getActivity().findViewById(R.id.details_name);
 		name.setText(v.get(pos).getName());
@@ -67,45 +79,59 @@ public class VoteDetailsFragment extends Fragment implements OnClickListener {
 		// Vote description
 		TextView description = (TextView) getActivity().findViewById(R.id.details_description);
 		description.setText(v.get(pos).getDescription());
-		
+
 		// Open vote button
 		Button open = (Button) getActivity().findViewById(R.id.details_btn_open);
 		open.setOnClickListener(this);
-		
+
 		// Show result button
-		Button show = (Button) getActivity().findViewById(R.id.details_btn_result);
+		show = (Button) getActivity().findViewById(R.id.details_btn_result);
 		show.setOnClickListener(this);
+		show.setText("Visa resultat");
+		resultsIsVisible = false;
+
+		// Remove vote button
+		remove = (Button) getActivity().findViewById(R.id.details_btn_delete);
+		remove.setOnClickListener(this);
 
 		// Result list
-		resultList = (ListView) getActivity().findViewById( R.id.list_result); 
-		
+		resultList = (ListView) getActivity().findViewById(R.id.list_result);
+
 		List<String> results = new ArrayList<String>();
-		for(Result r: res) {
+		for (Result r : res) {
 			results.add(r.getVotes() + "   " + getCandidate(r.getCid()));
 		}
-		
-		ArrayAdapter<String> listAdapter = new ArrayAdapter<String>(getActivity(), R.layout.row_result, results);  
+
+		ArrayAdapter<String> listAdapter = new ArrayAdapter<String>(getActivity(),
+				R.layout.row_result, results);
 		resultList.setAdapter(listAdapter);
-		
+
 		resultList.setVisibility(View.INVISIBLE);
-		
+
 		mCurrentPosition = pos;
 	}
-	
-	private String getCandidate(int cid){
-		DatabaseHelper dbh = new DatabaseHelper(this.getActivity());
+
+	private void removeVote(int vid) {
+		List<Result> results = dbh.getResultFromVote(vid);
+		for (Result r : results) {
+			dbh.removeCandidate(r.getCid());
+		}
+		dbh.removeResult(vid);
+		dbh.removeVote(vid);
+		mCallback.onVoteDeleted();
+	}
+
+	private String getCandidate(int cid) {
 		Candidate c = dbh.getCandidate(cid);
 		return c.getName();
 	}
 
 	private List<Vote> getVotes() {
-		DatabaseHelper dbh = new DatabaseHelper(this.getActivity());
 		List<Vote> votes = dbh.getAllVotes();
 		return votes;
 	}
-	
-	private List<Result> getResult(int vid){
-		DatabaseHelper dbh = new DatabaseHelper(this.getActivity());
+
+	private List<Result> getResult(int vid) {
 		List<Result> results = dbh.getResultFromVote(vid);
 		return results;
 	}
@@ -122,15 +148,60 @@ public class VoteDetailsFragment extends Fragment implements OnClickListener {
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
-			case R.id.details_btn_open:
-				Intent in = new Intent(getActivity(),VotingActivity.class);
-				in.putExtra("vid", getVotes().get(mCurrentPosition).getId());
-				in.putExtra("nov", getVotes().get(mCurrentPosition).getNbrOfVotes());
-				startActivity(in);
-				break;
-			case R.id.details_btn_result:
+		case R.id.details_btn_open:
+			Intent in = new Intent(getActivity(), VotingActivity.class);
+			in.putExtra("vid", getVotes().get(mCurrentPosition).getId());
+			in.putExtra("nov", getVotes().get(mCurrentPosition).getNbrOfVotes());
+			startActivity(in);
+			break;
+		case R.id.details_btn_result:
+			if (resultsIsVisible) {
+				resultsIsVisible = false;
+				resultList.setVisibility(View.INVISIBLE);
+				show.setText("Visa resultat");
+			} else {
+				resultsIsVisible = true;
 				resultList.setVisibility(View.VISIBLE);
-				break;
+				show.setText("Göm resultat");
+			}
+			break;
+		case R.id.details_btn_delete:
+			alertMessage();
+			break;
+
 		}
+	}
+	
+	@Override
+	public void onAttach(Activity activity) {
+		super.onAttach(activity);
+
+		// This makes sure that the container activity has implemented
+		// the callback interface. If not, it throws an exception.
+		try {
+			mCallback = (OnVoteDeletedListener) activity;
+		} catch (ClassCastException e) {
+			throw new ClassCastException(activity.toString()
+					+ " must implement OnVoteDeletedListener");
+		}
+	}
+
+	public void alertMessage() {
+		DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+				switch (which) {
+				case DialogInterface.BUTTON_POSITIVE:
+					
+					removeVote(getVotes().get(mCurrentPosition).getId());
+					Toast.makeText(getActivity(), "Omröstningen raderad", Toast.LENGTH_LONG).show();
+					break;
+				case DialogInterface.BUTTON_NEGATIVE:
+					break;
+				}
+			}
+		};
+		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+		builder.setMessage("Är du säker på att du vill radera omrötningen?").setPositiveButton("Ja", dialogClickListener)
+				.setNegativeButton("Nej", dialogClickListener).show();
 	}
 }

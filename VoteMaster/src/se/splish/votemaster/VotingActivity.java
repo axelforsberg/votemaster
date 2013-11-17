@@ -7,14 +7,16 @@ import java.util.TimerTask;
 
 import se.splish.votemaster.helper.DatabaseHelper;
 import se.splish.votemaster.model.Result;
+import se.splish.votemaster.model.Settings;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Bundle;
-import android.util.Log;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -91,23 +93,25 @@ public class VotingActivity extends Activity {
 	}
 
 	private void playSound() {
-		MediaPlayer mp = MediaPlayer.create(getBaseContext(), R.raw.floop);
-		mp.setOnCompletionListener(new OnCompletionListener() {
+		if (getSettings().getSound()) {
+			MediaPlayer mp = MediaPlayer.create(getBaseContext(), R.raw.floop);
+			mp.setOnCompletionListener(new OnCompletionListener() {
 
-			@Override
-			public void onCompletion(MediaPlayer mp) {
-				// TODO Auto-generated method stub
-				mp.release();
-			}
+				@Override
+				public void onCompletion(MediaPlayer mp) {
+					// TODO Auto-generated method stub
+					mp.release();
+				}
 
-		});
-		mp.start();
+			});
+			mp.start();
+		}
 	}
 
 	private void showDialog() {
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setTitle("Tack för din röst!");
-		builder.setMessage("Nästa person kan rösta om 5 sekunder");
+		builder.setMessage("Nästa person kan rösta om " + getSettings().getWaitTime() + " sekunder");
 		builder.setCancelable(false);
 
 		final AlertDialog dlg = builder.create();
@@ -117,12 +121,10 @@ public class VotingActivity extends Activity {
 		final Timer t = new Timer();
 		t.schedule(new TimerTask() {
 			public void run() {
-				dlg.dismiss(); // when the task active then close the dialog
-				t.cancel(); // also just top the timer thread, otherwise, you
-							// may receive a crash report
+				dlg.dismiss();
+				t.cancel(); 
 			}
-		}, 5000); // after 2 second (or 2000 miliseconds), the task will be
-					// active.
+		}, Integer.parseInt(getSettings().getWaitTime())*1000); 
 	}
 
 	private void restoreTable() {
@@ -131,5 +133,11 @@ public class VotingActivity extends Activity {
 		}
 		selectedPositions.clear();
 
+	}
+
+	public Settings getSettings() {
+		SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+		return new Settings(sharedPrefs.getBoolean("prefSoundOn", true), sharedPrefs.getString(
+				"prefWaitTime", "4"));
 	}
 }

@@ -24,11 +24,13 @@
     <string name="create_btn_create">Skapa omröstning</string>  
     
     <!-- Vote -->
-    
-    <!-- Result -->
-    
+
     <!-- Actives -->
     
     <!-- Settings -->
+    <string name="pref_label_cat">Röstningsinställningar</string>
+    <string name="pref_label_music">Ljud</string>
+    <string name="pref_label_pass">Lösenord</string>
+    <string name="pref_label_wait">Väntetid</string>
     
 </resources>

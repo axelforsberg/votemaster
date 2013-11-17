@@ -9,7 +9,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 
 public class StartActivity extends Activity implements OnClickListener {
-	Button result, create, actives, settings;
+	Button create, actives, settings;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -21,6 +21,9 @@ public class StartActivity extends Activity implements OnClickListener {
 		
 		actives = (Button) findViewById(R.id.btn_actives);
 		actives.setOnClickListener(this);
+		
+		settings = (Button) findViewById(R.id.btn_settings);
+		settings.setOnClickListener(this);
 	}
 
 	@Override
@@ -40,6 +43,7 @@ public class StartActivity extends Activity implements OnClickListener {
 			startActivity(new Intent(this, VotesActivity.class));
 			break;
 		case R.id.btn_settings:
+			startActivity(new Intent(this,UserSettingActivity.class));
 			break;
 		default:
 			break;

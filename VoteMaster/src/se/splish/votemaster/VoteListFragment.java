@@ -15,6 +15,8 @@ import android.widget.Toast;
 
 public class VoteListFragment extends ListFragment {
 	OnVoteNameSelectedListener mCallback;
+	ArrayAdapter<String> adapter;
+	List<String> names; 
 
 	public interface OnVoteNameSelectedListener {
 		/** Called by HeadlinesFragment when a list item is selected */
@@ -25,7 +27,7 @@ public class VoteListFragment extends ListFragment {
 	public void onActivityCreated(Bundle savedState) {
 		super.onActivityCreated(savedState);
 
-		List<String> names = new ArrayList<String>();
+		names = new ArrayList<String>();
 		for (Vote v : getVotes()) {
 			names.add(v.getName());
 		}
@@ -35,7 +37,8 @@ public class VoteListFragment extends ListFragment {
 
 		// Create an array adapter for the list view, using the Ipsum headlines
 		// array
-		setListAdapter(new ArrayAdapter<String>(getActivity(), layout, names));
+		adapter = new ArrayAdapter<String>(getActivity(), layout, names);
+		setListAdapter(adapter);
 	}
 
 	@Override
@@ -80,5 +83,13 @@ public class VoteListFragment extends ListFragment {
 			getActivity().finish();
 		}
 		return votes;
+	}
+	
+	public void updateList(){
+		names.clear();
+		for (Vote v : getVotes()) {
+			names.add(v.getName());
+		}
+		adapter.notifyDataSetChanged(); 
 	}
 }

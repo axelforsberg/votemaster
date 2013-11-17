@@ -204,4 +204,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		}
 		return candidatelist;
 	}
+
+	public void removeCandidate(int cid) {
+		SQLiteDatabase db = this.getReadableDatabase();
+		db.delete(TABLE_CANDIDATE, KEY_CID + "=" + cid, null);
+	}
+
+	public void removeResult(int vid) {
+		SQLiteDatabase db = this.getReadableDatabase();
+		db.delete(TABLE_RESULT, KEY_VID + "=" + vid, null);
+	}
+
+	public void removeVote(int vid) {
+		SQLiteDatabase db = this.getReadableDatabase();
+		db.delete(TABLE_VOTE, KEY_VID + "=" + vid, null);	
+	}
 }

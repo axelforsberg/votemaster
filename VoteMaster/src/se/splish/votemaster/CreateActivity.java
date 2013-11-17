@@ -37,15 +37,17 @@ public class CreateActivity extends Activity implements OnClickListener, OnValue
 		create.setOnClickListener(this);
 
 		nbrOfCandidates = (NumberPicker) findViewById(R.id.numberPicker1);
-		nbrOfCandidates.setMaxValue(100);
+		nbrOfCandidates.setMaxValue(16);
 		nbrOfCandidates.setMinValue(1);
 		nbrOfCandidates.setValue(2);
+		nbrOfCandidates.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
 		nbrOfCandidates.setOnValueChangedListener(this);
 
 		nbrOfVotes = (NumberPicker) findViewById(R.id.numberPicker2);
-		nbrOfVotes.setMaxValue(100);
+		nbrOfVotes.setMaxValue(nbrOfCandidates.getMaxValue());
 		nbrOfVotes.setMinValue(1);
 		nbrOfVotes.setValue(1);
+		nbrOfVotes.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
 		nbrOfVotes.setOnValueChangedListener(this);
 
 		myList = (ListView) findViewById(R.id.listView1);
@@ -61,6 +63,7 @@ public class CreateActivity extends Activity implements OnClickListener, OnValue
 		switch (v.getId()) {
 		case R.id.btn_create_vote:
 			createVote();
+			finish();
 			break;
 		}
 	}

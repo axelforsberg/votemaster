@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+  
+    <PreferenceCategory android:title="@string/pref_label_cat">
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="prefSoundOn"
+            android:title="@string/pref_label_music" >
+        </CheckBoxPreference>
+ 
+        <ListPreference
+            android:defaultValue="4"
+            android:key="prefWaitTime"
+            android:entries="@array/waitTime"
+            android:entryValues="@array/waitTimeValues"
+            android:title="@string/pref_label_wait" />
+    </PreferenceCategory>
+ 
+</PreferenceScreen>

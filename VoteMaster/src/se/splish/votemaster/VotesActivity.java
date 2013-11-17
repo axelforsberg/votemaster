@@ -5,7 +5,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 
 public class VotesActivity extends FragmentActivity implements
-		VoteListFragment.OnVoteNameSelectedListener {
+		VoteListFragment.OnVoteNameSelectedListener, VoteDetailsFragment.OnVoteDeletedListener {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +46,6 @@ public class VotesActivity extends FragmentActivity implements
 	}
 
 	public void showUI() {
-
 		VoteDetailsFragment myFrag = (VoteDetailsFragment) getSupportFragmentManager()
 				.findFragmentById(R.id.details_fragment);
 		getSupportFragmentManager().beginTransaction().show(myFrag).commit();
@@ -81,5 +80,13 @@ public class VotesActivity extends FragmentActivity implements
 			// Commit the transaction
 			transaction.commit();
 		}
+	}
+
+	@Override
+	public void onVoteDeleted() {
+		VoteListFragment listFrag = (VoteListFragment) getSupportFragmentManager()
+				.findFragmentById(R.id.list_fragment);
+		listFrag.updateList();
+		hideUI();
 	}
 }
