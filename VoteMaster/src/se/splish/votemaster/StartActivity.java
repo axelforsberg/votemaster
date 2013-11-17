@@ -21,9 +21,6 @@ public class StartActivity extends Activity implements OnClickListener {
 		
 		actives = (Button) findViewById(R.id.btn_actives);
 		actives.setOnClickListener(this);
-		
-		result = (Button) findViewById(R.id.btn_result);
-		result.setOnClickListener(this);
 	}
 
 	@Override
@@ -41,9 +38,6 @@ public class StartActivity extends Activity implements OnClickListener {
 			break;
 		case R.id.btn_actives:
 			startActivity(new Intent(this, VotesActivity.class));
-			break;
-		case R.id.btn_result:
-			startActivity(new Intent(this, ResultActivity.class));
 			break;
 		case R.id.btn_settings:
 			break;

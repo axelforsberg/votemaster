@@ -75,7 +75,7 @@ public class CandidateAdapter extends BaseAdapter {
         ViewHolder holder;
         if (convertView == null) {
             holder = new ViewHolder();
-            convertView = mInflater.inflate(R.layout.item, null);
+            convertView = mInflater.inflate(R.layout.row_candidate, null);
             holder.caption = (EditText) convertView
                     .findViewById(R.id.ItemCaption);
             convertView.setTag(holder);

@@ -1,24 +1,28 @@
 package se.splish.votemaster;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import se.splish.votemaster.helper.DatabaseHelper;
+import se.splish.votemaster.model.Candidate;
+import se.splish.votemaster.model.Result;
 import se.splish.votemaster.model.Vote;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.text.Layout;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 
 public class VoteDetailsFragment extends Fragment implements OnClickListener {
 	final static String ARG_POSITION = "position";
 	int mCurrentPosition = -1;
+	ListView resultList;
 	View v;
 	
 	@Override
@@ -39,45 +43,71 @@ public class VoteDetailsFragment extends Fragment implements OnClickListener {
 	@Override
 	public void onStart() {
 		super.onStart();
-		// During startup, check if there are arguments passed to the fragment.
-		// onStart is a good place to do this because the layout has already
-		// been
-		// applied to the fragment at this point so we can safely call the
-		// method
-		// below that sets the article text.
 		Bundle args = getArguments();
 		if (args != null) {
-			// Set article based on argument passed in
 			updateDetailsView(args.getInt(ARG_POSITION));
 		} else if (mCurrentPosition != -1) {
-			// Set article based on saved instance state defined during
-			// onCreateView
 			updateDetailsView(mCurrentPosition);
 		} else {
 			((VotesActivity) getActivity()).hideUI();
 		}
-		
 	}
 
 
 	public void updateDetailsView(int pos) {
 		((VotesActivity) getActivity()).showUI();
-		TextView name = (TextView) getActivity().findViewById(R.id.details_name);
-		name.setText(getVotes().get(pos).getName());
-
-		TextView description = (TextView) getActivity().findViewById(R.id.details_description);
-		description.setText(getVotes().get(pos).getDescription());
 		
-		mCurrentPosition = pos;
+		List<Vote> v = getVotes();
+		List<Result> res = getResult(v.get(pos).getId());
+		
+		// Vote name
+		TextView name = (TextView) getActivity().findViewById(R.id.details_name);
+		name.setText(v.get(pos).getName());
 
+		// Vote description
+		TextView description = (TextView) getActivity().findViewById(R.id.details_description);
+		description.setText(v.get(pos).getDescription());
+		
+		// Open vote button
 		Button open = (Button) getActivity().findViewById(R.id.details_btn_open);
 		open.setOnClickListener(this);
+		
+		// Show result button
+		Button show = (Button) getActivity().findViewById(R.id.details_btn_result);
+		show.setOnClickListener(this);
+
+		// Result list
+		resultList = (ListView) getActivity().findViewById( R.id.list_result); 
+		
+		List<String> results = new ArrayList<String>();
+		for(Result r: res) {
+			results.add(r.getVotes() + "   " + getCandidate(r.getCid()));
+		}
+		
+		ArrayAdapter<String> listAdapter = new ArrayAdapter<String>(getActivity(), R.layout.row_result, results);  
+		resultList.setAdapter(listAdapter);
+		
+		resultList.setVisibility(View.INVISIBLE);
+		
+		mCurrentPosition = pos;
+	}
+	
+	private String getCandidate(int cid){
+		DatabaseHelper dbh = new DatabaseHelper(this.getActivity());
+		Candidate c = dbh.getCandidate(cid);
+		return c.getName();
 	}
 
 	private List<Vote> getVotes() {
 		DatabaseHelper dbh = new DatabaseHelper(this.getActivity());
 		List<Vote> votes = dbh.getAllVotes();
 		return votes;
+	}
+	
+	private List<Result> getResult(int vid){
+		DatabaseHelper dbh = new DatabaseHelper(this.getActivity());
+		List<Result> results = dbh.getResultFromVote(vid);
+		return results;
 	}
 
 	@Override
@@ -97,8 +127,10 @@ public class VoteDetailsFragment extends Fragment implements OnClickListener {
 				in.putExtra("vid", getVotes().get(mCurrentPosition).getId());
 				in.putExtra("nov", getVotes().get(mCurrentPosition).getNbrOfVotes());
 				startActivity(in);
-			break;
+				break;
+			case R.id.details_btn_result:
+				resultList.setVisibility(View.VISIBLE);
+				break;
 		}
 	}
-
 }

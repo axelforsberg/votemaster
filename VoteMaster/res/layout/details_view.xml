@@ -51,4 +51,17 @@
         android:layout_alignLeft="@+id/details_btn_delete"
         android:text="Visa Resultat" />
 
+    <ListView
+        android:id="@+id/list_result"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/details_btn_open"
+        android:layout_alignLeft="@+id/details_description"
+        android:layout_below="@+id/details_description"
+        android:layout_margin="20dp"
+        android:layout_marginRight="40dp"
+        android:layout_toLeftOf="@+id/details_btn_delete" >
+
+    </ListView>
+
 </RelativeLayout>
