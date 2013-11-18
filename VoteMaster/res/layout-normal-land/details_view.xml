@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <TextView
+        android:id="@+id/details_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:text="VoteName"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textSize="30sp" />
+
+    <Button
+        android:id="@+id/details_btn_delete"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/details_btn_result"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:text="Tabort" />
+
+    <Button
+        android:id="@+id/details_btn_open"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/details_btn_delete"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="10dp"
+        android:text="Öppna" />
+
+    <ListView
+        android:id="@+id/list_result"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/tnov"
+        android:layout_alignParentBottom="true"
+        android:layout_below="@+id/tnov"
+        android:layout_marginRight="20dp"
+        android:layout_toLeftOf="@+id/details_btn_delete" >
+
+    </ListView>
+
+    <Button
+        android:id="@+id/details_btn_result"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/details_name"
+        android:layout_alignBottom="@+id/details_name"
+        android:layout_alignLeft="@+id/details_btn_delete"
+        android:text="Visa Resultat" />
+
+    <TextView
+        android:id="@+id/details_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/details_btn_delete"
+        android:layout_centerHorizontal="true"
+        android:text="description"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/tnov"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/details_name"
+        android:layout_below="@+id/details_name"
+        android:text="total number of votes" />
+
+</RelativeLayout>

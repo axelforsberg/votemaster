@@ -19,7 +19,7 @@
     <string name="create_label_name">Namn på omröstning</string>
     <string name="create_label_description">Beskrivning</string>
     <string name="create_label_nbrOfCandidates">Antal Kandidater</string>
-    <string name="create_label_nbrOfVotes">Antal röster per deltagare</string>
+    <string name="create_label_nbrOfVotes">Antal röster</string>
     <string name="create_label_candidates">Kandidater</string>
     <string name="create_btn_create">Skapa omröstning</string>  
     

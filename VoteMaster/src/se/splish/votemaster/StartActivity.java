@@ -3,7 +3,6 @@ package se.splish.votemaster;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -24,13 +23,6 @@ public class StartActivity extends Activity implements OnClickListener {
 		
 		settings = (Button) findViewById(R.id.btn_settings);
 		settings.setOnClickListener(this);
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.start, menu);
-		return true;
 	}
 
 	@Override

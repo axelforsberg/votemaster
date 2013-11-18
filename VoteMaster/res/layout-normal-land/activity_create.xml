@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <EditText
+        android:id="@+id/et_name"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/textView1"
+        android:layout_below="@+id/textView1"
+        android:layout_marginBottom="10dp"
+        android:ems="10" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/textView1"
+        android:layout_below="@+id/et_name"
+        android:text="@string/create_label_description" />
+
+    <EditText
+        android:id="@+id/et_description"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/textView1"
+        android:layout_below="@+id/textView2"
+        android:layout_marginBottom="10dp"
+        android:ems="10"
+        android:inputType="textMultiLine"
+        android:lines="1" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/textView1"
+        android:layout_below="@+id/et_description"
+        android:text="@string/create_label_nbrOfCandidates" />
+
+    <NumberPicker
+        android:id="@+id/numberPicker1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/textView3"
+        android:layout_marginBottom="20dp"
+        android:layout_below="@+id/textView3" />
+
+    <NumberPicker
+        android:id="@+id/numberPicker2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:layout_alignLeft="@+id/textView4"
+        android:layout_below="@+id/textView4" />
+
+    <ListView
+        android:id="@+id/listView1"
+        android:layout_width="500dp"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/btn_create_vote"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/textView5"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="5dp"
+        android:layout_toRightOf="@+id/textView4" >
+
+    </ListView>
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/tw_header"
+        android:layout_alignTop="@+id/listView1"
+        android:text="@string/create_label_name" />
+
+    <TextView
+        android:id="@+id/tw_header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="5dp"
+        android:text="@string/create_label_header"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/tw_header"
+        android:layout_alignBottom="@+id/tw_header"
+        android:layout_alignLeft="@+id/listView1"
+        android:text="@string/create_label_candidates" />
+
+    <Button
+        android:id="@+id/btn_create_vote"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignRight="@+id/listView1"
+        android:layout_marginBottom="5dp"
+        android:text="@string/create_btn_create" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/et_description"
+        android:layout_marginLeft="13dp"
+        android:layout_toRightOf="@+id/textView1"
+        android:text="@string/create_label_nbrOfVotes" />
+
+</RelativeLayout>
