@@ -13,17 +13,19 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.GridView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class VotingActivity extends Activity {
@@ -47,7 +49,6 @@ public class VotingActivity extends Activity {
 			nbrOfVotes = (Integer) b.get("nov");
 			vid = (Integer) b.get("vid");
 		}
-
 		results = dbh.getResultFromVote(vid);
 
 		ArrayList<String> names = new ArrayList<String>();
@@ -73,23 +74,42 @@ public class VotingActivity extends Activity {
 
 				if (selectedPositions.contains(position)) {
 					selectedPositions.remove(selectedPositions.indexOf(position));
-					gridview.getChildAt(position).setBackgroundColor(Color.LTGRAY);
+					setUnselected(((TextView) gridview.getChildAt(position)));
+					// ((TextView)gridview.getChildAt(position)).setTypeface(null,
+					// Typeface.NORMAL);
+					// ((TextView)gridview.getChildAt(position)).setTextSize(((TextView)gridview.getChildAt(position)).getTextSize()-2);
+					// gridview.getChildAt(position).setBackgroundColor(Color.LTGRAY);
 				} else {
 					if (selectedPositions.size() >= nbrOfVotes) {
 						Toast.makeText(getBaseContext(), "Du har valt max antal kandidater.",
 								Toast.LENGTH_SHORT).show();
 					} else {
 						selectedPositions.add(position);
-						gridview.getChildAt(position).setBackgroundColor(Color.GREEN);
+						setSelected(((TextView) gridview.getChildAt(position)));
+						// ((TextView)gridview.getChildAt(position)).setTypeface(null,
+						// Typeface.BOLD);
+						// ((TextView)gridview.getChildAt(position)).setTextSize(((TextView)gridview.getChildAt(position)).getTextSize()+2);
+						// gridview.getChildAt(position).setBackgroundColor(Color.GREEN);
 					}
 				}
 			}
 		});
 	}
 
+	private void setSelected(TextView tw) {
+		tw.setBackgroundColor(Color.GREEN);
+		tw.setTypeface(null, Typeface.BOLD);
+		tw.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 28);
+	}
+
+	private void setUnselected(TextView tw) {
+		tw.setBackgroundColor(Color.LTGRAY);
+		tw.setTypeface(null, Typeface.NORMAL);
+		tw.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 25);
+	}
+
 	private void updateResult() {
 		dbh.incrementVote(vid);
-		Log.d("incrementCall", vid + "");
 		for (int i : selectedPositions) {
 			dbh.incrementResult(vid, results.get(i).getCid());
 		}
@@ -125,14 +145,14 @@ public class VotingActivity extends Activity {
 		t.schedule(new TimerTask() {
 			public void run() {
 				dlg.dismiss();
-				t.cancel(); 
+				t.cancel();
 			}
-		}, Integer.parseInt(getSettings().getWaitTime())*1000); 
+		}, Integer.parseInt(getSettings().getWaitTime()) * 1000);
 	}
 
 	private void restoreTable() {
 		for (int i : selectedPositions) {
-			gridview.getChildAt(i).setBackgroundColor(Color.LTGRAY);
+			setUnselected((TextView) gridview.getChildAt(i));
 		}
 		selectedPositions.clear();
 

@@ -24,6 +24,7 @@
     <string name="create_btn_create">Skapa omröstning</string>  
     
     <!-- Vote -->
+    <string name="vote_btn_vote">Rösta</string>
 
     <!-- Actives -->
     
