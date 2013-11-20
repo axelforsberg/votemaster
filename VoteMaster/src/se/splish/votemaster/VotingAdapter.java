@@ -49,7 +49,7 @@ public class VotingAdapter extends BaseAdapter {
         TextView tw;
         if (convertView == null) {  // if it's not recycled, initialize some attributes
             tw = new TextView(mContext);
-            tw.setLayoutParams(new GridView.LayoutParams(width/4, height/5));
+            tw.setLayoutParams(new GridView.LayoutParams(width/5-4, height/6));
             tw.setPadding(2, 2, 2, 2);
             tw.setGravity(Gravity.CENTER);
             tw.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 25);

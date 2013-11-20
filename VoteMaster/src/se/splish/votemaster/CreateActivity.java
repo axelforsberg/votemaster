@@ -37,7 +37,7 @@ public class CreateActivity extends Activity implements OnClickListener, OnValue
 		create.setOnClickListener(this);
 
 		nbrOfCandidates = (NumberPicker) findViewById(R.id.numberPicker1);
-		nbrOfCandidates.setMaxValue(16);
+		nbrOfCandidates.setMaxValue(25);
 		nbrOfCandidates.setMinValue(1);
 		nbrOfCandidates.setValue(2);
 		nbrOfCandidates.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);

@@ -1,8 +1,10 @@
 package se.splish.votemaster;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
+import se.splish.votemaster.helper.AlphanumComparator;
 import se.splish.votemaster.helper.DatabaseHelper;
 import se.splish.votemaster.model.Candidate;
 import se.splish.votemaster.model.Result;
@@ -82,7 +84,7 @@ public class VoteDetailsFragment extends Fragment implements OnClickListener {
 
 		// Vote description
 		TextView tnov = (TextView) getActivity().findViewById(R.id.tnov);
-		tnov.setText("Totala antalet röster: " + v.get(pos).getTotalVotes());
+		tnov.setText("Totala antalet röstande: " + v.get(pos).getTotalVotes());
 
 		// Open vote button
 		Button open = (Button) getActivity().findViewById(R.id.details_btn_open);
@@ -103,15 +105,23 @@ public class VoteDetailsFragment extends Fragment implements OnClickListener {
 
 		List<String> results = new ArrayList<String>();
 		
+		int totalVotes = 0;
 		for (Result r : res) {
-			if (v.get(pos).getTotalVotes() > 0) {
-				double percent = (double)r.getVotes() / (double)v.get(pos).getTotalVotes()*100;
+			totalVotes += r.getVotes();
+		}
+		
+		for (Result r : res) {
+			if (totalVotes > 0) {
+				double percent = ((double)r.getVotes() / (double)totalVotes)*100;
 				percent = (double)Math.round(percent * 100) / 100;
 				results.add(percent + "% " + r.getVotes() + " röster  -  " + getCandidate(r.getCid()));
 			} else {
 				results.add(r.getVotes() + " röster  -  " + getCandidate(r.getCid()));
 			}
 		}
+		
+		Collections.sort(results,new AlphanumComparator());
+		Collections.reverse(results);
 
 		ArrayAdapter<String> listAdapter = new ArrayAdapter<String>(getActivity(),
 				R.layout.row_result, results);
@@ -212,7 +222,7 @@ public class VoteDetailsFragment extends Fragment implements OnClickListener {
 			}
 		};
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-		builder.setMessage("Är du säker på att du vill radera omrötningen?")
+		builder.setMessage("Är du säker på att du vill radera omröstningen?")
 				.setPositiveButton("Ja", dialogClickListener)
 				.setNegativeButton("Nej", dialogClickListener).show();
 	}

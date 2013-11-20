@@ -4,12 +4,13 @@
 
     <Button
         android:id="@+id/voting_btn_vote"
-        android:layout_width="200dp"
-        android:layout_height="60dp"
+        android:layout_width="300dp"
+        android:layout_height="80dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
+        android:layout_marginBottom="5dp"
         android:text="@string/vote_btn_vote"
-        android:textSize="30sp" />
+        android:textSize="40sp" />
 
     <GridView
         android:id="@+id/grid"
@@ -21,7 +22,7 @@
         android:layout_centerInParent="true"
         android:gravity="center"
         android:horizontalSpacing="4dp"
-        android:numColumns="4"
+        android:numColumns="5"
         android:verticalSpacing="4dp" >
 
     </GridView>
